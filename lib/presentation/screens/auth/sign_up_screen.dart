@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_application/data/services/network_caller.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
+import 'package:task_manager_application/presentation/widgets/snack_bar_message.dart';
+
+import '../../../data/models/response_object.dart';
+import '../../../data/utility/urls.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -9,13 +14,13 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-
   final TextEditingController _emailTEC = TextEditingController();
   final TextEditingController _firstNameTEC = TextEditingController();
   final TextEditingController _lastNameTEC = TextEditingController();
   final TextEditingController _mobileTEC = TextEditingController();
   final TextEditingController _passwordTEC = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  bool _isRegistrationInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +34,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 60,),
-                  Text("Join With Us", style: Theme.of(context).textTheme.titleLarge,),
-                  const SizedBox(height: 16,),
+                  const SizedBox(
+                    height: 60,
+                  ),
+                  Text(
+                    "Join With Us",
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleLarge,
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
                   TextFormField(
                     controller: _emailTEC,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       hintText: 'Email',
                     ),
+                    validator: (String? value) {
+                      if (value
+                          ?.trim()
+                          .isEmpty ?? true) {
+                        return 'Enter your email';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 8,
@@ -47,6 +70,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     decoration: const InputDecoration(
                       hintText: 'First Name',
                     ),
+                    validator: (String? value) {
+                      if (value
+                          ?.trim()
+                          .isEmpty ?? true) {
+                        return 'Enter your first name';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 8,
@@ -56,6 +87,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     decoration: const InputDecoration(
                       hintText: 'Last Name',
                     ),
+                    validator: (String? value) {
+                      if (value
+                          ?.trim()
+                          .isEmpty ?? true) {
+                        return 'Enter last name';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 8,
@@ -66,24 +105,54 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     decoration: const InputDecoration(
                       hintText: 'Mobile',
                     ),
+                    validator: (String? value) {
+                      if (value
+                          ?.trim()
+                          .isEmpty ?? true) {
+                        return 'Enter your mobile number';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 8,
                   ),
                   TextFormField(
+                    obscureText: true,
                     controller: _passwordTEC,
                     decoration: const InputDecoration(
                       hintText: 'Password',
                     ),
+                    validator: (String? value) {
+                      if (value
+                          ?.trim()
+                          .isEmpty ?? true) {
+                        return 'Enter your password';
+                      }
+                      if (value!.length <= 6) {
+                        return 'Password length must be greater than 6';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Icon(Icons.arrow_circle_right_outlined)),
+                    child: Visibility(
+                      visible: _isRegistrationInProgress == false,
+                      replacement: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      child: ElevatedButton(
+                          onPressed: ()  {
+                            if (_formkey.currentState!.validate()) {
+                              _signUp();
+                            }
+                          },
+                          child: const Icon(Icons.arrow_circle_right_outlined)),
+                    ),
                   ),
                   const SizedBox(
                     height: 32,
@@ -91,7 +160,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Have account?",
                         style: TextStyle(fontSize: 16, color: Colors.black54),
                       ),
@@ -111,6 +180,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  Future<void> _signUp() async {
+    Map<String, dynamic> inputParams = {
+      "email": _emailTEC.text.trim(),
+      "firstName": _firstNameTEC.text.trim(),
+      "lastName": _lastNameTEC.text.trim(),
+      "mobile": _mobileTEC.text.trim(),
+      "password": _passwordTEC.text,
+    };
+    _isRegistrationInProgress = true;
+    setState(() {});
+    final ResponseObject response =
+    await NetworkCaller.postRequest(
+        Urls.registration, inputParams);
+    _isRegistrationInProgress = false;
+    setState(() {});
+    if (response.isSuccess) {
+      if (mounted) {
+        showSnackBarMessage(
+            context,
+            "Registration Successfull! Please login");
+        Navigator.pop(context);
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+            context, "Registration Failed! Try again",
+            true);
+      }
+    }
+  }
+
   @override
   void dispose() {
     _emailTEC.dispose();
@@ -120,5 +220,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordTEC.dispose();
     super.dispose();
   }
-
 }

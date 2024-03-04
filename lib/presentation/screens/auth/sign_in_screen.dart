@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_application/data/models/response_object.dart';
+import 'package:task_manager_application/data/services/network_caller.dart';
 import 'package:task_manager_application/presentation/screens/auth/email_verification_screen.dart';
 import 'package:task_manager_application/presentation/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager_application/presentation/screens/auth/sign_up_screen.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
+import 'package:task_manager_application/presentation/widgets/snack_bar_message.dart';
+
+import '../../../data/utility/urls.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -15,6 +20,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEC = TextEditingController();
   final TextEditingController _passwordTEC = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  bool _isLoginInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +50,13 @@ class _SignInScreenState extends State<SignInScreen> {
                     decoration: const InputDecoration(
                       hintText: 'Email',
                     ),
+                    // TODO: try Reuse validator
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your email';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 8,
@@ -54,21 +67,31 @@ class _SignInScreenState extends State<SignInScreen> {
                     decoration: const InputDecoration(
                       hintText: 'Password',
                     ),
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your password';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MainBottomNavScreen()),
-                              (route) => false);
-                        },
-                        child: const Icon(Icons.arrow_circle_right_outlined)),
+                    child: Visibility(
+                      visible: _isLoginInProgress == false,
+                      replacement: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            if (_formkey.currentState!.validate()) {
+                              _signIn();
+                            }
+                          },
+                          child: const Icon(Icons.arrow_circle_right_outlined)),
+                    ),
                   ),
                   const SizedBox(
                     height: 60,
@@ -77,7 +100,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: TextButton(
                         style: TextButton.styleFrom(
                             foregroundColor: Colors.grey,
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 16)),
                         onPressed: () {
                           Navigator.push(
@@ -91,7 +114,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Don't have an account?",
                         style: TextStyle(fontSize: 16, color: Colors.black54),
                       ),
@@ -112,6 +135,35 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _signIn() async {
+    _isLoginInProgress = true;
+    setState(() {});
+    Map<String, dynamic> inputParams = {
+      "email": _emailTEC.text.trim(),
+      "password": _passwordTEC.text
+    };
+    final ResponseObject response =
+        await NetworkCaller.postRequest(Urls.login, inputParams);
+    _isLoginInProgress = false;
+    setState(() {});
+    if(response.isSuccess) {
+      if(!mounted) {
+        return;
+      }
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  const MainBottomNavScreen()),
+              (route) => false);
+    } else {
+      if(mounted) {
+        showSnackBarMessage(context, response.errorMessage ?? "Login Failed! Try again");
+      }
+    }
+
   }
 
   @override
