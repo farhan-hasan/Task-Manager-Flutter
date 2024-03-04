@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:task_manager_application/presentation/screens/sign_in_screen.dart';
+import 'package:task_manager_application/presentation/screens/auth/sign_in_screen.dart';
 import 'package:task_manager_application/presentation/utils/assets_path.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
 
 import '../widgets/app_logo.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

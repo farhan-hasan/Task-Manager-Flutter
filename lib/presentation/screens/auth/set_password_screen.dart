@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_application/presentation/screens/pin_verification_screen.dart';
+import 'package:task_manager_application/presentation/screens/auth/pin_verification_screen.dart';
+import 'package:task_manager_application/presentation/screens/auth/sign_in_screen.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
 
-class EmailVerificationScreen extends StatefulWidget {
-  const EmailVerificationScreen({super.key});
+class SetPasswordScreen extends StatefulWidget {
+  const SetPasswordScreen({super.key});
 
   @override
-  State<EmailVerificationScreen> createState() => _EmailVerificationScreenState();
+  State<SetPasswordScreen> createState() => _SetPasswordScreenState();
 }
 
-class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
-  final TextEditingController _emailTEC = TextEditingController();
+class _SetPasswordScreenState extends State<SetPasswordScreen> {
+  final TextEditingController _passwordTEC = TextEditingController();
+  final TextEditingController _confirmPasswordTEC = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
@@ -29,14 +31,14 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     height: 100,
                   ),
                   Text(
-                    "Your Email Address",
+                    "Set Password",
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(
                     height: 4,
                   ),
                   const Text(
-                    "A 6 digit verification code will be sent to your email address",
+                    "Minimum 8 characters with letters and number combination",
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.grey
@@ -44,10 +46,20 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
                   const SizedBox(height: 24,),
                   TextFormField(
-                    controller: _emailTEC,
+                    controller: _passwordTEC,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
-                      hintText: 'Email',
+                      hintText: 'Password',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  TextFormField(
+                    controller: _confirmPasswordTEC,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      hintText: 'Confirm Password',
                     ),
                   ),
                   const SizedBox(
@@ -57,9 +69,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PinVerificationScreen()));
+                          
                         },
-                        child: const Icon(Icons.arrow_circle_right_outlined)),
+                        child: const Text("Confirm")),
                   ),
                   const SizedBox(
                     height: 32,
@@ -73,7 +85,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       ),
                       TextButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SignInScreen()),
+                                    (route) => false);
                           },
                           child: const Text("Sign in"))
                     ],
@@ -89,7 +105,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   @override
   void dispose() {
-    _emailTEC.dispose();
+    _passwordTEC.dispose();
+    _confirmPasswordTEC.dispose();
     super.dispose();
   }
 }
