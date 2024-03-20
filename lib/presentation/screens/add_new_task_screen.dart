@@ -1,6 +1,10 @@
+
 import 'package:flutter/material.dart';
+import 'package:task_manager_application/data/services/network_caller.dart';
+import 'package:task_manager_application/data/utility/urls.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
 import 'package:task_manager_application/presentation/widgets/profile_app_bar.dart';
+import 'package:task_manager_application/presentation/widgets/snack_bar_message.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -14,53 +18,122 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _titleTEC = TextEditingController();
   final TextEditingController _descriptionTEC = TextEditingController();
   final GlobalKey<FormState>  _formKey = GlobalKey<FormState>();
+  bool _addNewTaskInProgress = false;
+  bool _shouldRefreshNewTaskList = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: profileAppBar,
-      body: BackgroundWidget(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 48,),
-                Text("Add New Task", style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontSize: 24
-                ),),
-                const SizedBox(height: 16,),
-                TextFormField(
-                  controller: _titleTEC,
-                  decoration: InputDecoration(
-                    hintText: "Title"
-                  ),
-                ),
-                const SizedBox(height: 8,),
-                TextFormField(
-                  controller: _descriptionTEC,
-                  decoration: InputDecoration(
-                    hintText: "Description"
-                  ),
-                  maxLines: 6,
-                ),
-                const SizedBox(height:16,),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
+    return PopScope(
+
+      // WillPopScope (Deprecated)
+      // onWillPop: () async {
+      //   Navigator.pop(context,_shouldRefreshNewTaskList);
+      //   return false;
+      // },
+
+      canPop: false, // system back button turned off
+      onPopInvoked: (didPop) {
+        if(didPop) {
+          return;
+        }
+        Navigator.pop(context,_shouldRefreshNewTaskList);
+      },
+      child: Scaffold(
+        appBar: profileAppBar,
+        body: BackgroundWidget(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 48,),
+                    Text("Add New Task", style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontSize: 24
+                    ),),
+                    const SizedBox(height: 16,),
+                    TextFormField(
+                      controller: _titleTEC,
+                      decoration: const InputDecoration(
+                        hintText: "Title"
+                      ),
+                      validator: (String? value) {
+                        if(value?.trim().isEmpty ?? true) {
+                          return 'Enter your title';
+                        }
+                        return null ;
                       },
-                      child: const Icon(Icons.arrow_circle_right_outlined)),
+                    ),
+                    const SizedBox(height: 8,),
+                    TextFormField(
+                      controller: _descriptionTEC,
+                      decoration: const InputDecoration(
+                        hintText: "Description"
+                      ),
+                      validator: (String? value) {
+                        if(value?.trim().isEmpty ?? true) {
+                          return 'Enter your description';
+                        }
+                        return null ;
+                      },
+                      maxLines: 6,
+                    ),
+                    const SizedBox(height:16,),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Visibility(
+                        visible: _addNewTaskInProgress == false,
+                        replacement: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        child: ElevatedButton(
+                            onPressed: () {
+                              if(_formKey.currentState!.validate()) {
+                                _addNewTask();
+                              }
+                            },
+                            child: const Icon(Icons.arrow_circle_right_outlined)),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+  
+  Future<void> _addNewTask() async {
+    _addNewTaskInProgress = true;
+    setState(() {});
+
+    Map<String,dynamic> inputParams = {
+      "title":_titleTEC.text.trim(),
+      "description":_descriptionTEC.text.trim(),
+      "status":"New"
+    };
+
+    final response = await NetworkCaller.postRequest(Urls.createTask, inputParams);
+    _addNewTaskInProgress = false;
+    setState(() {});
+
+    if(response.isSuccess) {
+      _shouldRefreshNewTaskList = true;
+      _titleTEC.clear();
+      _descriptionTEC.clear();
+      if(mounted) {
+        showSnackBarMessage(context, 'New task added');
+      }
+    } else {
+      if(mounted) {
+        showSnackBarMessage(context, response.errorMessage ?? 'Failed to add task', true);
+      }
+    }
+
   }
 
   @override

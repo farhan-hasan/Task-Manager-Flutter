@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:task_manager_application/app.dart';
+import 'package:task_manager_application/presentation/controllers/auth_controller.dart';
 import 'package:task_manager_application/presentation/screens/auth/sign_in_screen.dart';
 import 'package:task_manager_application/presentation/screens/update_profile_screen.dart';
 import '../utils/app_colors.dart';
@@ -11,10 +14,12 @@ PreferredSizeWidget get profileAppBar {
     title: Row(
       children: [
         GestureDetector(
-          child: CircleAvatar(),
+          child: CircleAvatar(
+            backgroundImage: MemoryImage(base64Decode(AuthController.userData!.photo!)),
+          ),
           onTap: () {
             Navigator.push(TaskManager.navigatorKey.currentState!.context,
-                MaterialPageRoute(builder: (context) => UpdateProfileScreen()));
+                MaterialPageRoute(builder: (context) => const UpdateProfileScreen()));
           },
         ),
         const SizedBox(
@@ -25,12 +30,12 @@ PreferredSizeWidget get profileAppBar {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Farhan Hasan",
-                style: TextStyle(fontSize: 16, color: Colors.white),
+                AuthController.userData?.fullName ?? '',
+                style: const TextStyle(fontSize: 16, color: Colors.white),
               ),
               Text(
-                "syedfarhan6491232@gmail.com",
-                style: TextStyle(
+                AuthController.userData?.email ?? '',
+                style: const TextStyle(
                     fontSize: 12,
                     color: Colors.white,
                     fontWeight: FontWeight.w400),
@@ -39,7 +44,8 @@ PreferredSizeWidget get profileAppBar {
           ),
         ),
         IconButton(
-            onPressed: () {
+            onPressed: () async {
+              await AuthController.clearUserData();
               Navigator.pushAndRemoveUntil(
                   TaskManager.navigatorKey.currentState!.context,
                   MaterialPageRoute(builder: (context) => SignInScreen()),
