@@ -10,6 +10,12 @@ class Urls {
   static String cancelledTaskList = '$_baseUrl/listTaskByStatus/Cancelled';
   static String updateProfile = '$_baseUrl/profileUpdate';
 
+  static String verifyEmail(String email) => '$_baseUrl/RecoverVerifyEmail/$email';
+
+  static String verifyPin(String email, String pin) => '$_baseUrl/RecoverVerifyOTP/$email/$pin';
+
+  static String setPassword = '$_baseUrl/RecoverResetPass';
+
   static String deleteTask(String id) => '$_baseUrl/deleteTask/$id';
 
 

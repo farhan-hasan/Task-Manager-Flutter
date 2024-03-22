@@ -13,8 +13,11 @@ class NetworkCaller {
     try {
       log(url);
       log(AuthController.accessToken.toString());
-      final Response response = await get(Uri.parse(url),
-          headers: {'token': AuthController.accessToken ?? ''});
+      final Response response = await get(Uri.parse(url), headers: {
+        'token': AuthController.accessToken ?? '',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      });
       log(response.statusCode.toString());
       log(response.body.toString());
 
@@ -54,6 +57,7 @@ class NetworkCaller {
             'Content-type': 'application/json',
             'token': AuthController.accessToken ?? ''
           });
+      log(url);
       log(response.statusCode.toString());
       log(response.body.toString());
 

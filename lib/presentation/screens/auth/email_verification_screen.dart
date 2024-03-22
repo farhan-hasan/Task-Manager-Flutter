@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_application/data/services/network_caller.dart';
 import 'package:task_manager_application/presentation/screens/auth/pin_verification_screen.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
+import 'package:task_manager_application/presentation/widgets/snack_bar_message.dart';
+
+import '../../../data/utility/urls.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
 
   @override
-  State<EmailVerificationScreen> createState() => _EmailVerificationScreenState();
+  State<EmailVerificationScreen> createState() =>
+      _EmailVerificationScreenState();
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final TextEditingController _emailTEC = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  bool _verifyEmailInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +43,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
                   const Text(
                     "A 6 digit verification code will be sent to your email address",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey
-                    ),
+                    style: TextStyle(fontSize: 15, color: Colors.grey),
                   ),
-                  const SizedBox(height: 24,),
+                  const SizedBox(
+                    height: 24,
+                  ),
                   TextFormField(
                     controller: _emailTEC,
                     keyboardType: TextInputType.emailAddress,
@@ -53,13 +58,19 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const PinVerificationScreen()));
-                        },
-                        child: const Icon(Icons.arrow_circle_right_outlined)),
+                  Visibility(
+                    visible: _verifyEmailInProgress == false,
+                    replacement: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            _verifyEmail();
+                          },
+                          child: const Icon(Icons.arrow_circle_right_outlined)),
+                    ),
                   ),
                   const SizedBox(
                     height: 32,
@@ -67,7 +78,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         "Have account?",
                         style: TextStyle(fontSize: 16, color: Colors.black54),
                       ),
@@ -85,6 +96,29 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _verifyEmail() async {
+    _verifyEmailInProgress = true;
+    setState(() {});
+    final response =
+        await NetworkCaller.getRequest(Urls.verifyEmail(_emailTEC.text.trim()));
+    _verifyEmailInProgress = false;
+    if (response.isSuccess) {
+      if (mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    PinVerificationScreen(email: _emailTEC.text.trim(),)));
+      }
+    } else {
+      setState(() {});
+      if (mounted) {
+        showSnackBarMessage(
+            context, response.errorMessage ?? 'Email verification failed');
+      }
+    }
   }
 
   @override

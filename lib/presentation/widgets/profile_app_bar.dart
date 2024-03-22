@@ -15,7 +15,7 @@ PreferredSizeWidget get profileAppBar {
       children: [
         GestureDetector(
           child: CircleAvatar(
-            //backgroundImage: MemoryImage(base64Decode(AuthController.userData!.photo!)),
+            backgroundImage: MemoryImage(base64Decode(AuthController.userData!.photo!)),
           ),
           onTap: () {
             Navigator.push(TaskManager.navigatorKey.currentState!.context,
