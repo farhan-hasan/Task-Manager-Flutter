@@ -30,18 +30,18 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: profileAppBar,
-      body: BackgroundWidget(
-        child: Visibility(
-          visible: _getAllCompletedTaskListInProgress == false,
-          replacement: const Center(
-            child: CircularProgressIndicator(),
-          ),
-          // TODO : when list is empty, the refreshindicator is not working. make it work
-          // TODO : hint -> it is not working when the list is empty
-          child: RefreshIndicator(
-            onRefresh: () async {
-              _getAllCompletedTaskList();
-            },
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _getAllCompletedTaskList();
+        },
+        child: BackgroundWidget(
+          child: Visibility(
+            visible: _getAllCompletedTaskListInProgress == false,
+            replacement: const Center(
+              child: CircularProgressIndicator(),
+            ),
+            // TODO : when list is empty, the refreshindicator is not working. make it work
+            // TODO : hint -> it is not working when the list is empty
             child: Visibility(
               visible: _completedTaskListWrapper.taskList?.isNotEmpty ?? false,
               replacement: EmptyListWidget(),
@@ -49,11 +49,10 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
                   itemCount: _completedTaskListWrapper.taskList?.length ?? 0,
                   itemBuilder: (context, index) {
                     return TaskCard(
-                      taskItem: _completedTaskListWrapper.taskList![index],
-                      refreshList: () {
-                        _getAllCompletedTaskList();
-                      }
-                    );
+                        taskItem: _completedTaskListWrapper.taskList![index],
+                        refreshList: () {
+                          _getAllCompletedTaskList();
+                        });
                   }),
             ),
           ),

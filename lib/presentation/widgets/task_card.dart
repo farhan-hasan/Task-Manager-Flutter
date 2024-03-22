@@ -105,14 +105,14 @@ class _TaskCardState extends State<TaskCard> {
                   },
                 ),
                 ListTile(
-                  title: const Text("In Progress"),
-                  trailing: _isCurrentStatus('In Progress') ? const Icon(Icons.check) : null,
+                  title: const Text("Progress"),
+                  trailing: _isCurrentStatus('Progress') ? const Icon(Icons.check) : null,
                   onTap: () {
-                    if(_isCurrentStatus('In Progress')) {
+                    if(_isCurrentStatus('Progress')) {
                       return;
                     }
                     else {
-                      _updateTaskById(id, 'In Progress');
+                      _updateTaskById(id,'Progress');
                       Navigator.pop(context);
                     }
                   },

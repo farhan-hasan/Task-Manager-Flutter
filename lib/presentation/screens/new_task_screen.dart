@@ -79,7 +79,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        // TODO : Recall the home apis agter successfully add a new task/tasks
         child: const Icon(Icons.add),
         onPressed: () async {
           final result = await Navigator.push(context,
