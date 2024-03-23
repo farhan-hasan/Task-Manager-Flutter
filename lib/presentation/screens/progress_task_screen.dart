@@ -31,25 +31,30 @@ class _ProgressTaskScreenState extends State<ProgressTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: profileAppBar,
-      body: BackgroundWidget(
-        child: Visibility(
-          visible: _getAllInProgressTaskListInProgress == false,
-          replacement: const Center(
-            child: CircularProgressIndicator(),
-          ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _getAllInProgressTaskList();
+        },
+        child: BackgroundWidget(
           child: Visibility(
-            visible: _inProgressTaskListWrapper.taskList?.isNotEmpty ?? false,
-            replacement: EmptyListWidget(),
-            child: ListView.builder(
-                itemCount: _inProgressTaskListWrapper.taskList?.length ?? 0,
-                itemBuilder: (context, index) {
-                  return TaskCard(
-                    taskItem: _inProgressTaskListWrapper.taskList![index],
-                    refreshList: () {
-                      _getAllInProgressTaskList();
-                    },
-                  );
-                }),
+            visible: _getAllInProgressTaskListInProgress == false,
+            replacement: const Center(
+              child: CircularProgressIndicator(),
+            ),
+            child: Visibility(
+              visible: _inProgressTaskListWrapper.taskList?.isNotEmpty ?? false,
+              replacement: EmptyListWidget(),
+              child: ListView.builder(
+                  itemCount: _inProgressTaskListWrapper.taskList?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    return TaskCard(
+                      taskItem: _inProgressTaskListWrapper.taskList![index],
+                      refreshList: () {
+                        _getAllInProgressTaskList();
+                      },
+                    );
+                  }),
+            ),
           ),
         ),
       ),
