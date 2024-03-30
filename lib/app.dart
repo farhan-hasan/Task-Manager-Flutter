@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:task_manager_application/presentation/controllers/sign_in_controller.dart';
 import 'package:task_manager_application/presentation/screens/splash_screen.dart';
 import 'package:task_manager_application/presentation/utils/app_colors.dart';
+
+import 'controller_binder.dart';
 
 class TaskManager extends StatefulWidget {
   const TaskManager({super.key});
@@ -14,39 +18,44 @@ class TaskManager extends StatefulWidget {
 class _TaskManagerState extends State<TaskManager> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: TaskManager.navigatorKey,
       title: "Task Manager",
-      home: SplashScreen(),
-      theme: ThemeData(
-          inputDecorationTheme: InputDecorationTheme(
-              fillColor: Colors.white,
-              filled: true,
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(8))),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: AppColors.themeColor,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 12))),
-          textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                  foregroundColor: AppColors.themeColor,
-                  textStyle:
-                      const TextStyle(fontWeight: FontWeight.w600, fontSize: 16))),
-          textTheme: const TextTheme(
-            titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
-          ),
-          chipTheme: ChipThemeData(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50)))),
+      home: const SplashScreen(),
+      theme: _themeData,
+      initialBinding: ControllerBInder(),
     );
   }
+
+  final ThemeData _themeData = ThemeData(
+      inputDecorationTheme: InputDecorationTheme(
+          fillColor: Colors.white,
+          filled: true,
+          contentPadding:
+          EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(8))),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              backgroundColor: AppColors.themeColor,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 12))),
+      textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+              foregroundColor: AppColors.themeColor,
+              textStyle:
+              const TextStyle(fontWeight: FontWeight.w600, fontSize: 16))),
+      textTheme: const TextTheme(
+        titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+      ),
+      chipTheme: ChipThemeData(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50))));
+
 }
+
