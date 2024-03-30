@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:task_manager_application/controller_binder.dart';
 import 'package:task_manager_application/presentation/controllers/sign_in_controller.dart';
 import 'package:task_manager_application/presentation/screens/auth/email_verification_screen.dart';
 import 'package:task_manager_application/presentation/screens/main_bottom_nav_screen.dart';
@@ -109,11 +110,12 @@ class _SignInScreenState extends State<SignInScreen> {
                             textStyle: const TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 16)),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const EmailVerificationScreen()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) =>
+                          //             const EmailVerificationScreen()));
+                          Get.to(() => const EmailVerificationScreen());
                         },
                         child: const Text("Forgot Password?")),
                   ),
@@ -126,10 +128,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       TextButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SignUpScreen()));
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => const SignUpScreen()));
+                            Get.to(() => const SignUpScreen());
                           },
                           child: const Text("Sign up"))
                     ],
@@ -149,12 +152,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
     if(result) {
       if(mounted) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                const MainBottomNavScreen()),
-                (route) => false);
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) =>
+        //         const MainBottomNavScreen()),
+        //         (route) => false);
+        Get.offAll(() => const MainBottomNavScreen(), binding: ControllerBInder()); // // Explicitly initialized the binder
       }
     } else {
       if(mounted) {

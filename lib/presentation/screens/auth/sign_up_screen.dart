@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager_application/data/services/network_caller.dart';
+import 'package:task_manager_application/presentation/controllers/sign_up_controller.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
 import 'package:task_manager_application/presentation/widgets/snack_bar_message.dart';
 
@@ -21,6 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordTEC = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   bool _isRegistrationInProgress = false;
+  final SignUpController _signUpController = Get.find<SignUpController>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   Text(
                     "Join With Us",
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(
                     height: 16,
@@ -54,9 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: 'Email',
                     ),
                     validator: (String? value) {
-                      if (value
-                          ?.trim()
-                          .isEmpty ?? true) {
+                      if (value?.trim().isEmpty ?? true) {
                         return 'Enter your email';
                       }
                       return null;
@@ -71,9 +69,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: 'First Name',
                     ),
                     validator: (String? value) {
-                      if (value
-                          ?.trim()
-                          .isEmpty ?? true) {
+                      if (value?.trim().isEmpty ?? true) {
                         return 'Enter your first name';
                       }
                       return null;
@@ -88,9 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: 'Last Name',
                     ),
                     validator: (String? value) {
-                      if (value
-                          ?.trim()
-                          .isEmpty ?? true) {
+                      if (value?.trim().isEmpty ?? true) {
                         return 'Enter last name';
                       }
                       return null;
@@ -106,9 +100,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: 'Mobile',
                     ),
                     validator: (String? value) {
-                      if (value
-                          ?.trim()
-                          .isEmpty ?? true) {
+                      if (value?.trim().isEmpty ?? true) {
                         return 'Enter your mobile number';
                       }
                       return null;
@@ -125,9 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       hintText: 'Password',
                     ),
                     validator: (String? value) {
-                      if (value
-                          ?.trim()
-                          .isEmpty ?? true) {
+                      if (value?.trim().isEmpty ?? true) {
                         return 'Enter your password';
                       }
                       if (value!.length <= 6) {
@@ -147,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: CircularProgressIndicator(),
                       ),
                       child: ElevatedButton(
-                          onPressed: ()  {
+                          onPressed: () {
                             if (_formkey.currentState!.validate()) {
                               _signUp();
                             }
@@ -167,7 +157,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       TextButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            //Navigator.pop(context);
+                            Get.back();
                           },
                           child: const Text("Sign in"))
                     ],
@@ -182,32 +173,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp() async {
-    Map<String, dynamic> inputParams = {
-      "email": _emailTEC.text.trim(),
-      "firstName": _firstNameTEC.text.trim(),
-      "lastName": _lastNameTEC.text.trim(),
-      "mobile": _mobileTEC.text.trim(),
-      "password": _passwordTEC.text,
-    };
-    _isRegistrationInProgress = true;
-    setState(() {});
-    final ResponseObject response =
-    await NetworkCaller.postRequest(
-        Urls.registration, inputParams);
-    _isRegistrationInProgress = false;
-    setState(() {});
-    if (response.isSuccess) {
+    final result = await _signUpController.signUp(
+        _emailTEC.text.trim(),
+        _firstNameTEC.text.trim(),
+        _lastNameTEC.text.trim(),
+        _mobileTEC.text.trim(),
+        _passwordTEC.text);
+
+    if (result) {
       if (mounted) {
-        showSnackBarMessage(
-            context,
-            "Registration Successfull! Please login");
-        Navigator.pop(context);
+        showSnackBarMessage(context, "Registration Successful! Please login");
+        //Navigator.pop(context);
+        Get.back();
       }
     } else {
       if (mounted) {
-        showSnackBarMessage(
-            context, "Registration Failed! Try again",
-            true);
+        showSnackBarMessage(context, "Registration Failed! Try again", true);
       }
     }
   }

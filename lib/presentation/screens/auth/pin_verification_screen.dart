@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager_application/presentation/screens/auth/set_password_screen.dart';
 import 'package:task_manager_application/presentation/screens/auth/sign_in_screen.dart';
@@ -107,11 +108,12 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                       ),
                       TextButton(
                           onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignInScreen()),
-                                    (route) => false);
+                            // Navigator.pushAndRemoveUntil(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => SignInScreen()),
+                            //         (route) => false);
+                            Get.offAll(() => const SignInScreen());
                           },
                           child: const Text("Sign in"))
                     ],
@@ -136,10 +138,11 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
 
     if (response.isSuccess) {
       if(mounted) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>  SetPasswordScreen(otp: pin, email: widget.email,)));
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) =>  SetPasswordScreen(otp: pin, email: widget.email,)));
+        Get.to(() => SetPasswordScreen(otp: pin, email: widget.email,));
       }
     } else {
       setState(() {});

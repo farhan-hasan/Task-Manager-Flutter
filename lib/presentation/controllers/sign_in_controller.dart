@@ -14,6 +14,7 @@ class SignInController extends GetxController {
   String get errorMessage => _errorMessage ?? 'Login Failed! Try again';
 
   Future<bool> signIn(String email, String password) async {
+    bool isSuccess = false;
     _inProgress = true;
     update();
     Map<String, dynamic> inputParams = {"email": email, "password": password};
@@ -30,12 +31,11 @@ class SignInController extends GetxController {
       // // Save the data to local cache
       await AuthController.saveUserData(loginResponse.userData!);
       await AuthController.saveUserToken(loginResponse.token!);
-      update();
-      return true;
+      isSuccess = true;
     } else {
       _errorMessage = response.errorMessage;
-      update();
-      return false;
     }
+    update();
+    return isSuccess;
   }
 }

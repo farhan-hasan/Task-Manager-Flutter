@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:task_manager_application/data/services/network_caller.dart';
 import 'package:task_manager_application/presentation/screens/auth/pin_verification_screen.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
@@ -84,7 +86,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       ),
                       TextButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            //Navigator.pop(context);
+                            Get.back();
                           },
                           child: const Text("Sign in"))
                     ],
@@ -106,11 +109,12 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     _verifyEmailInProgress = false;
     if (response.isSuccess) {
       if (mounted) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    PinVerificationScreen(email: _emailTEC.text.trim(),)));
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) =>
+        //             PinVerificationScreen(email: _emailTEC.text.trim(),)));
+        Get.to(() => PinVerificationScreen(email: _emailTEC.text.trim(),));
       }
     } else {
       setState(() {});

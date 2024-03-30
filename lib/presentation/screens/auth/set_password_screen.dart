@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager_application/presentation/screens/auth/sign_in_screen.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
 import 'package:task_manager_application/presentation/widgets/snack_bar_message.dart';
@@ -97,11 +98,12 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                       ),
                       TextButton(
                           onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SignInScreen()),
-                                    (route) => false);
+                            // Navigator.pushAndRemoveUntil(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => SignInScreen()),
+                            //         (route) => false);
+                            Get.offAll(() => const SignInScreen());
                           },
                           child: const Text("Sign in"))
                     ],
@@ -136,10 +138,11 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
     if (response.isSuccess) {
       if(mounted) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>  SignInScreen()), (route) => false,);
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) =>  SignInScreen()), (route) => false,);
+        Get.offAll(() => const SignInScreen());
       }
     } else {
       setState(() {});
