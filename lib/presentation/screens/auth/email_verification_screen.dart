@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:task_manager_application/data/services/network_caller.dart';
+import 'package:task_manager_application/presentation/controllers/email_verification_controller.dart';
 import 'package:task_manager_application/presentation/screens/auth/pin_verification_screen.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
 import 'package:task_manager_application/presentation/widgets/snack_bar_message.dart';
@@ -19,7 +20,7 @@ class EmailVerificationScreen extends StatefulWidget {
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final TextEditingController _emailTEC = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  bool _verifyEmailInProgress = false;
+  final EmailVerificationController _emailVerificationController = Get.find<EmailVerificationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -60,19 +61,23 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  Visibility(
-                    visible: _verifyEmailInProgress == false,
-                    replacement: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            _verifyEmail();
-                          },
-                          child: const Icon(Icons.arrow_circle_right_outlined)),
-                    ),
+                  GetBuilder<EmailVerificationController>(
+                    builder: (emailVerificationController) {
+                      return Visibility(
+                        visible: emailVerificationController.inProgress == false,
+                        replacement: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                _verifyEmail();
+                              },
+                              child: const Icon(Icons.arrow_circle_right_outlined)),
+                        ),
+                      );
+                    }
                   ),
                   const SizedBox(
                     height: 32,
@@ -102,12 +107,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   Future<void> _verifyEmail() async {
-    _verifyEmailInProgress = true;
-    setState(() {});
-    final response =
-        await NetworkCaller.getRequest(Urls.verifyEmail(_emailTEC.text.trim()));
-    _verifyEmailInProgress = false;
-    if (response.isSuccess) {
+
+    final result = await _emailVerificationController.verifyEmail(_emailTEC.text.trim());
+    if (result) {
       if (mounted) {
         // Navigator.push(
         //     context,
@@ -117,10 +119,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         Get.to(() => PinVerificationScreen(email: _emailTEC.text.trim(),));
       }
     } else {
-      setState(() {});
       if (mounted) {
         showSnackBarMessage(
-            context, response.errorMessage ?? 'Email verification failed');
+            context, _emailVerificationController.errorMessage);
       }
     }
   }

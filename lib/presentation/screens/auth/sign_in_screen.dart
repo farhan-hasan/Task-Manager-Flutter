@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:task_manager_application/controller_binder.dart';
 import 'package:task_manager_application/presentation/controllers/sign_in_controller.dart';
 import 'package:task_manager_application/presentation/screens/auth/email_verification_screen.dart';
@@ -9,7 +8,6 @@ import 'package:task_manager_application/presentation/screens/auth/sign_up_scree
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
 import 'package:task_manager_application/presentation/widgets/snack_bar_message.dart';
 
-import '../../../data/utility/urls.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -22,7 +20,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEC = TextEditingController();
   final TextEditingController _passwordTEC = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  bool _isLoginInProgress = false;
+  final bool _isLoginInProgress = false;
   final SignInController _signInController = Get.find<SignInController>();
 
   @override

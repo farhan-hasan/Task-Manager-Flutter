@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:task_manager_application/presentation/controllers/pin_verification_controller.dart';
 import 'package:task_manager_application/presentation/screens/auth/set_password_screen.dart';
 import 'package:task_manager_application/presentation/screens/auth/sign_in_screen.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
@@ -25,7 +26,7 @@ class PinVerificationScreen extends StatefulWidget {
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   final TextEditingController _pinTEC = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  bool _verifyPinInProgress = false;
+  final PinVerificationController _pinVerificationController = Get.find<PinVerificationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -85,16 +86,20 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  Visibility(
-                    visible: _verifyPinInProgress == false,
-                    replacement: const Center(child: CircularProgressIndicator(),),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            _verifyPin(_pinTEC.text.trim());
-                          }, child: const Text("Verify")),
-                    ),
+                  GetBuilder<PinVerificationController>(
+                    builder: (pinVerificationController) {
+                      return Visibility(
+                        visible: pinVerificationController.inProgress == false,
+                        replacement: const Center(child: CircularProgressIndicator(),),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                _verifyPin(_pinTEC.text.trim());
+                              }, child: const Text("Verify")),
+                        ),
+                      );
+                    }
                   ),
                   const SizedBox(
                     height: 32,
@@ -128,15 +133,10 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   }
 
   Future<void> _verifyPin(String pin) async {
-    _verifyPinInProgress = true;
-    setState(() {});
-    log(widget.email);
     String email = widget.email;
-    final response =
-        await NetworkCaller.getRequest(Urls.verifyPin(email, pin));
-    _verifyPinInProgress = false;
+    final result = await _pinVerificationController.verifyPin(email, pin);
 
-    if (response.isSuccess) {
+    if (result) {
       if(mounted) {
         // Navigator.push(
         //     context,
@@ -145,9 +145,8 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         Get.to(() => SetPasswordScreen(otp: pin, email: widget.email,));
       }
     } else {
-      setState(() {});
       if(mounted) {
-        showSnackBarMessage(context, response.errorMessage ?? 'Pin verification failed');
+        showSnackBarMessage(context, _pinVerificationController.errorMessage);
       }
     }
   }

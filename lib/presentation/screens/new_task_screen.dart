@@ -63,7 +63,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     visible: newTaskController
                             .newTaskListWrapper.taskList?.isNotEmpty ??
                         false,
-                    replacement: EmptyListWidget(),
+                    replacement: const EmptyListWidget(),
                     child: ListView.builder(
                         itemCount: newTaskController
                                 .newTaskListWrapper.taskList?.length ??
@@ -85,7 +85,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
         onPressed: () async {
           // final result = await Navigator.push(context,
           //     MaterialPageRoute(builder: (context) => AddNewTaskScreen()));
@@ -96,6 +95,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         },
         backgroundColor: AppColors.themeColor,
         foregroundColor: Colors.white,
+        child: const Icon(Icons.add),
       ),
     );
   }

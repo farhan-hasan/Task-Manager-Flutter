@@ -39,11 +39,9 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
                 replacement: const Center(
                   child: CircularProgressIndicator(),
                 ),
-                // TODO : when list is empty, the refreshindicator is not working. make it work
-                // TODO : hint -> it is not working when the list is empty
                 child: Visibility(
                   visible: cancelledTaskController.cancelledTaskListWrapper.taskList?.isNotEmpty ?? false,
-                  replacement: EmptyListWidget(),
+                  replacement: const EmptyListWidget(),
                   child: ListView.builder(
                       itemCount: cancelledTaskController.cancelledTaskListWrapper.taskList?.length ?? 0,
                       itemBuilder: (context, index) {

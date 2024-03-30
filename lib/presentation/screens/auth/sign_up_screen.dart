@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task_manager_application/data/services/network_caller.dart';
 import 'package:task_manager_application/presentation/controllers/sign_up_controller.dart';
 import 'package:task_manager_application/presentation/widgets/background_widget.dart';
 import 'package:task_manager_application/presentation/widgets/snack_bar_message.dart';
 
-import '../../../data/models/response_object.dart';
-import '../../../data/utility/urls.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -22,7 +19,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mobileTEC = TextEditingController();
   final TextEditingController _passwordTEC = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  bool _isRegistrationInProgress = false;
+  final bool _isRegistrationInProgress = false;
   final SignUpController _signUpController = Get.find<SignUpController>();
 
   @override

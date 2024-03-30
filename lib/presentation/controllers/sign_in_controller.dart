@@ -27,7 +27,6 @@ class SignInController extends GetxController {
     if (response.isSuccess) {
       LoginResponse loginResponse =
           LoginResponse.fromJson(response.responseBody);
-      print(loginResponse.userData?.firstName);
       // // Save the data to local cache
       await AuthController.saveUserData(loginResponse.userData!);
       await AuthController.saveUserToken(loginResponse.token!);

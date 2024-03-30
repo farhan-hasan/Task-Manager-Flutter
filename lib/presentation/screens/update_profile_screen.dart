@@ -74,7 +74,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     enabled: false,
                     keyboardType: TextInputType.emailAddress,
                     controller: _emailTEC,
-                    decoration: InputDecoration(hintText: "Email"),
+                    decoration: const InputDecoration(hintText: "Email"),
                   ),
 
                   const SizedBox(
@@ -82,7 +82,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   TextFormField(
                     controller: _firstNameTEC,
-                    decoration: InputDecoration(hintText: "First Name"),
+                    decoration: const InputDecoration(hintText: "First Name"),
                     validator: (String? value) {
                       if(value?.trim().isNotEmpty ?? true) {
                         return 'Enter your first name';
@@ -95,7 +95,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   TextFormField(
                     controller: _lastNameTEC,
-                    decoration: InputDecoration(hintText: "Last Name"),
+                    decoration: const InputDecoration(hintText: "Last Name"),
                     validator: (String? value) {
                       if(value?.trim().isNotEmpty ?? true) {
                         return 'Enter your last name';
@@ -109,7 +109,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   TextFormField(
                     keyboardType: TextInputType.phone,
                     controller: _mobileTEC,
-                    decoration: InputDecoration(hintText: "Mobile"),
+                    decoration: const InputDecoration(hintText: "Mobile"),
                     validator: (String? value) {
                       if(value?.trim().isNotEmpty ?? true) {
                         return 'Enter your mobile number';
@@ -124,7 +124,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   TextFormField(
                     controller: _passwordTEC,
                     decoration:
-                        InputDecoration(hintText: "Password (Optional)"),
+                        const InputDecoration(hintText: "Password (Optional)"),
                   ),
                   const SizedBox(
                     height: 16,
@@ -163,7 +163,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         child: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.only(
@@ -182,7 +182,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 child: Text(
               _pickedImage?.name ?? '',
               maxLines: 1,
-              style: TextStyle(overflow: TextOverflow.ellipsis),
+              style: const TextStyle(overflow: TextOverflow.ellipsis),
             ))
           ],
         ),

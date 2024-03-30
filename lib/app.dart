@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task_manager_application/presentation/controllers/sign_in_controller.dart';
 import 'package:task_manager_application/presentation/screens/splash_screen.dart';
 import 'package:task_manager_application/presentation/utils/app_colors.dart';
 
@@ -32,7 +31,7 @@ class _TaskManagerState extends State<TaskManager> {
           fillColor: Colors.white,
           filled: true,
           contentPadding:
-          EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           border: OutlineInputBorder(
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(8))),

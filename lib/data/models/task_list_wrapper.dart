@@ -11,7 +11,7 @@ class TaskListWrapper {
     if (json['data'] != null) {
       taskList = <TaskItem>[];
       json['data'].forEach((v) {
-        taskList!.add(new TaskItem.fromJson(v));
+        taskList!.add(TaskItem.fromJson(v));
       });
     }
   }
